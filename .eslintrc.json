@@ -241,6 +241,22 @@
           "camelCase",
           "PascalCase"
         ]
+      },
+      {
+        "selector": [
+          "classProperty",
+          "objectLiteralProperty",
+          "typeProperty",
+          "classMethod",
+          "objectLiteralMethod",
+          "typeMethod",
+          "accessor",
+          "enumMember"
+        ],
+        "format": null,
+        "modifiers": [
+          "requiresQuotes"
+        ]
       }
     ],
     "no-underscore-dangle": "off",

@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html * {
+	transition: all .2s ease;
+}
+
+.navbar-item:hover {
+	color: black;
+	background-color: rgb(245 245 244);
+}
+
+.navbar-item {
+	color: white;
+}
+
+.navbar-item.selected {
+	color: black;
+	background-color: white;
+}
