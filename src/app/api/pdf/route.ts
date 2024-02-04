@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import MDToPDFConverter from "../../../domain/mdToPdfConverter";
+import MDToPDFConverter from "../../../domain/md-to-pdf-converter";
 
 export type RenderPdfApiResponse = { fileName: string };
 

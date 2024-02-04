@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { RenderPdfApiResponse } from "./api/pdf/route";
 import useDebounce from "./hooks/common/use-debounce";
 import randInt from "../utils/randint";
-import Loading from "../components/common/loading";
+import Loading from "./components/common/loading";
 
 export default function Home() {
   const [md, setMd] = useState<string>("");
