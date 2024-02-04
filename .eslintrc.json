@@ -276,6 +276,7 @@
     "no-empty-function": "off",
     "implicit-arrow-linebreak": "off",
     "function-paren-newline": "off",
+    "newline-per-chained-call": "off",
     "no-plusplus": [
       "error",
       {
