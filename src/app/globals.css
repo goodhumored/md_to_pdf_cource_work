@@ -4,19 +4,40 @@
 
 
 html * {
-	transition: all .2s ease;
+  transition: all .2s ease;
 }
 
 .navbar-item:hover {
-	color: black;
-	background-color: rgb(245 245 244);
+  color: black;
+  background-color: rgb(245 245 244);
 }
 
 .navbar-item {
-	color: white;
+  color: white;
 }
 
 .navbar-item.selected {
-	color: black;
-	background-color: white;
+  color: black;
+  background-color: white;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #FFF;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

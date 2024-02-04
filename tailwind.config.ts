@@ -22,6 +22,7 @@ const config: Config = {
   theme: {
     colors: {
       ...colors,
+      "black-semitransparent": "#00000080",
       "soft-brown": softBrown,
       "soft-brown-semitransparent": softBrownSemitransparent,
       "dark-gray": darkGray,
