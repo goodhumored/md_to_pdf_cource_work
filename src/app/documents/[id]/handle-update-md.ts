@@ -12,5 +12,5 @@ export default async function handleUpdateMd(documentId: string, newMd: string) 
   const doc = await documentRepo.getById(documentId);
   if (!doc) throw new Error("Document not found");
   await doc.writeMd(newMd);
-  await converter.convert(doc.getLocalMdFilePath(), doc.getLocalPdfFilePath());
+  await Promise.all([documentRepo.save(doc), converter.convert(doc.getLocalMdFilePath(), doc.getLocalPdfFilePath())]);
 }
