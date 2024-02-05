@@ -48,8 +48,8 @@ export default class UserDocument {
         id,
         owner,
         name,
-        mdPath: mdPath ?? `public/${name}-${id}.md`,
-        pdfPath: pdfPath ?? `public/${name}-${id}.pdf`,
+        mdPath: mdPath ?? `${name}-${id}.md`,
+        pdfPath: pdfPath ?? `${name}-${id}.pdf`,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -70,26 +70,33 @@ export default class UserDocument {
   }
 
   getMdCode(): Promise<string> {
-    return open(this._mdPath, "r")
-      .then((f) => f.readFile())
-      .then((b) => b.toString())
+    return open(this.getLocalMdFilePath(), "r")
+      .then((f) => f.readFile().then((b) => f.close().then(() => b.toString())))
       .catch(() => "");
   }
 
   writeMd(md: string): Promise<void> {
-    return open(this._mdPath, "r")
-      .then((f) => f.writeFile(md))
+    return open(this.getLocalMdFilePath(), "w+")
+      .then((f) => f.writeFile(md).then(() => f.close()))
       .then(() => {
         this._updatedAt = new Date();
       });
   }
 
-  getPdfFilePath(): string {
-    return this._pdfPath;
+  getLocalPdfFilePath(): string {
+    return `public/${this._pdfPath}`;
   }
 
-  getMdFilePath(): string {
-    return this._mdPath;
+  getLocalMdFilePath(): string {
+    return `public/${this._mdPath}`;
+  }
+
+  getPublicMd(): string {
+    return `/${this._mdPath}`;
+  }
+
+  getPublicPdfPath(): string {
+    return `/${this._pdfPath}`;
   }
 
   getUpdatedAt(): Date {

@@ -11,8 +11,8 @@ export default class UserDocumentMapper {
       owner_id: userDocument.getOwner().getId()!,
       updated_at: userDocument.getUpdatedAt(),
       created_at: userDocument.getCreatedAt(),
-      md_file_name: userDocument.getMdFilePath(),
-      pdf_file_name: userDocument.getPdfFilePath(),
+      md_file_name: userDocument.getLocalMdFilePath(),
+      pdf_file_name: userDocument.getLocalPdfFilePath(),
       name: userDocument.getName()
     };
   }
