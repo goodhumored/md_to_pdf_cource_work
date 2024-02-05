@@ -38,6 +38,13 @@ export default class SessionManager {
     return newSession;
   }
 
+  async getCurrentUserOrThrow(): Promise<User> {
+    const session = await this.getSession();
+    const user = session?.getUser();
+    if (!user) throw new Error("no user or session");
+    return user;
+  }
+
   async logoutSession(request?: NextRequest): Promise<void> {
     const session = await this.getSession(request);
     if (session) await this._sessionRepository.deleteById(session.getId()!);
