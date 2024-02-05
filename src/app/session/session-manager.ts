@@ -37,4 +37,9 @@ export default class SessionManager {
     cookies().set("session_id", newSession.getId()!);
     return newSession;
   }
+
+  async logoutSession(request?: NextRequest): Promise<void> {
+    const session = await this.getSession(request);
+    if (session) await this._sessionRepository.deleteById(session.getId()!);
+  }
 }

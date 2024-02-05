@@ -1,8 +1,9 @@
-import { v4 as uuidv4 } from "uuid";
 import { singleton } from "tsyringe";
+import { v4 as uuidv4 } from "uuid";
 import Session from "../../domain/session/session";
+import User from "../../domain/user/user";
 import DB from "../common/db";
-import UserSchema from "../user/user.schema";
+import UserRepository from "../user/user.repository";
 import SessionMapper from "./session.mapper";
 import SessionQueryBuilder from "./session.query-builder";
 import SessionSchema from "./session.schema";
@@ -11,6 +12,7 @@ import SessionSchema from "./session.schema";
 export default class SessionRepository {
   constructor(
     private readonly _db: DB,
+    private readonly _userRepo: UserRepository,
     private readonly _sessionMapper: SessionMapper,
     private readonly _sessionQueryBuilder: SessionQueryBuilder
   ) {}
@@ -27,10 +29,16 @@ export default class SessionRepository {
   }
 
   async getById(id: string): Promise<Session | undefined> {
-    const result = await this._db.query<UserSchema & SessionSchema>(this._sessionQueryBuilder.findById(id));
+    const result = await this._db.query<SessionSchema>(this._sessionQueryBuilder.findById(id));
     if (result.rows[0]) {
-      return this._sessionMapper.sessionSchemaWithUserSchemaToEntity(result.rows[0]);
+      let user: User | undefined;
+      if (result.rows[0].user_id) user = await this._userRepo.getById(result.rows[0].user_id);
+      return this._sessionMapper.sessionSchemaToEntity(result.rows[0], user);
     }
     return undefined;
+  }
+
+  deleteById(id: string): Promise<void> {
+    return this._db.query(this._sessionQueryBuilder.deleteById(id)).then(() => {});
   }
 }

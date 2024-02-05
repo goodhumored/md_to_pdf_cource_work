@@ -4,6 +4,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import LogoutButton from "./logout-button";
 import NavItem from "./navbar-item";
 
 type PageItem = { path: string; label: string };
@@ -34,7 +35,8 @@ export default function Navbar({ username }: { username?: string | undefined }) 
             </NavItem>
           ))}
         </nav>
-        <div className="px-6 py-4 align-middle text-white">{username}</div>
+        {username && <div className="px-6 py-4 align-middle text-white">{username}</div>}
+        {username && <LogoutButton className="px-4 py-4 navbar-item" />}
       </div>
     </div>
   );
