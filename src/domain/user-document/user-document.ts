@@ -95,6 +95,14 @@ export default class UserDocument {
     return `/${this._mdPath}`;
   }
 
+  getMdPath(): string {
+    return `${this._mdPath}`;
+  }
+
+  getPdfPath(): string {
+    return `${this._pdfPath}`;
+  }
+
   getPublicPdfPath(): string {
     return `/${this._pdfPath}`;
   }
