@@ -23,7 +23,7 @@ export default function DocumentEditor({
   const [md, setMd] = useState<string>(mdCode);
   const [pdfSource, setPdfSource] = useState(pdfFilePath);
   const [loading, setLoading] = useState(false);
-  const debauncedMd = useDebounce(md, 500);
+  const debauncedMd = useDebounce(md, 1000);
 
   useEffect(() => {
     if (debauncedMd === "") return;
