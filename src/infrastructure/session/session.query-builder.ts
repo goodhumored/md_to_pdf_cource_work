@@ -14,7 +14,11 @@ export default class SessionQueryBuilder {
   }
 
   update(sessionSchema: SessionSchema) {
-    return `UPDATE sessions SET user_id=${sessionSchema.user_id} last_used=${sessionSchema.last_used} created_at=${sessionSchema.created_at} WHERE id='${sessionSchema.id}'`;
+    return `UPDATE sessions SET user_id=${
+      sessionSchema.user_id
+    }, last_used='${sessionSchema.last_used.toISOString()}', created_at='${sessionSchema.created_at.toISOString()}' WHERE id='${
+      sessionSchema.id
+    }'`;
   }
 
   deleteById(id: string) {

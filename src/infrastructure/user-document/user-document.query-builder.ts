@@ -20,7 +20,13 @@ export default class UserDocumentQueryBuilder {
   }
 
   update(userDocumentSchema: UserDocumentSchema) {
-    return `UPDATE user_documents SET owner_id=${userDocumentSchema.owner_id} name='${userDocumentSchema.name}' pdf_file_name='${userDocumentSchema.pdf_file_name}' md_file_name='${userDocumentSchema.md_file_name}' updated_at=${userDocumentSchema.updated_at} created_at=${userDocumentSchema.created_at} WHERE id='${userDocumentSchema.id}'`;
+    return `UPDATE user_documents SET owner_id=${userDocumentSchema.owner_id}, name='${
+      userDocumentSchema.name
+    }', pdf_file_name='${userDocumentSchema.pdf_file_name}', md_file_name='${
+      userDocumentSchema.md_file_name
+    }', updated_at='${userDocumentSchema.updated_at.toISOString()}', created_at='${userDocumentSchema.created_at.toISOString()}' WHERE id='${
+      userDocumentSchema.id
+    }'`;
   }
 
   deleteById(id: string) {
