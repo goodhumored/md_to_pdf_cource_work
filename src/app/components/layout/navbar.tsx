@@ -2,6 +2,7 @@
 
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import LogoutButton from "./logout-button";
@@ -10,8 +11,9 @@ import NavItem from "./navbar-item";
 type PageItem = { path: string; label: string };
 
 const pages: PageItem[] = [
-  { path: "/", label: "Главная" },
-  { path: "/documents", label: "Документы" }
+  { path: "/documents", label: "Документы" },
+  { path: "/title-pages", label: "Титульники" },
+  { path: "/templates", label: "LaTex шаблоны" }
 ];
 
 export default function Navbar({ username }: { username?: string | undefined }) {
@@ -20,7 +22,9 @@ export default function Navbar({ username }: { username?: string | undefined }) 
   return (
     <div className="container mx-auto">
       <div className="flex justify-between sm:hidden px-4 text-white">
-        <div className="text-base uppercase font-trajan">MD2PDF</div>
+        <div className="text-base uppercase font-trajan">
+          <Link href="/">MD2PDF</Link>
+        </div>
         <div className="hover:cursor-pointer" onClick={() => setShow(!show)}>
           <FontAwesomeIcon width={19} height={15} icon={faBars} />
         </div>
