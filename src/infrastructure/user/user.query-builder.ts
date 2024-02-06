@@ -20,6 +20,6 @@ export default class UserQueryBuilder {
   }
 
   update(userSchema: UserSchema) {
-    return `UPDATE users SET 'username=${userSchema.username}' password_hash='${userSchema.password_hash}' WHERE id=${userSchema.id}`;
+    return `UPDATE users SET username='${userSchema.username}' password_hash='${userSchema.password_hash}' WHERE id=${userSchema.id}`;
   }
 }
