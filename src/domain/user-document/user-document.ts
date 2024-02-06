@@ -1,5 +1,7 @@
 import { open } from "fs/promises";
 import { v4 } from "uuid";
+import LatexTemplate from "../latex-template/latex-template";
+import TitlePage from "../title-page/title-page";
 import User from "../user/user";
 
 export default class UserDocument {
@@ -12,6 +14,10 @@ export default class UserDocument {
   private _mdPath: string;
 
   private _pdfPath: string;
+
+  private _titlePage?: TitlePage | undefined;
+
+  private _template?: LatexTemplate | undefined;
 
   private _createdAt: Date;
 
@@ -28,6 +34,8 @@ export default class UserDocument {
       pdfPath: string;
       createdAt: Date;
       updatedAt: Date;
+      titlePage?: TitlePage | undefined;
+      template?: LatexTemplate | undefined;
     },
     isNew?: boolean
   ) {
@@ -39,6 +47,8 @@ export default class UserDocument {
     this._createdAt = data.createdAt;
     this._updatedAt = data.updatedAt;
     this._isNew = !!isNew;
+    this._titlePage = data.titlePage;
+    this._template = data.template;
   }
 
   static create(owner: User, name: string, mdPath?: string, pdfPath?: string) {
@@ -105,6 +115,22 @@ export default class UserDocument {
 
   getPublicPdfPath(): string {
     return `/${this._pdfPath}`;
+  }
+
+  getLatexTemplate(): LatexTemplate | undefined {
+    return this._template;
+  }
+
+  setLatexTemplate(template: LatexTemplate | undefined) {
+    this._template = template;
+  }
+
+  getTitlePage(): TitlePage | undefined {
+    return this._titlePage;
+  }
+
+  setTitlePage(title: TitlePage | undefined) {
+    this._titlePage = title;
   }
 
   getUpdatedAt(): Date {

@@ -12,21 +12,21 @@ export default class UserDocumentQueryBuilder {
   }
 
   insert(userDocumentSchema: UserDocumentSchema) {
-    return `INSERT INTO user_documents (id, owner_id, name, pdf_file_name, md_file_name, updated_at, created_at) VALUES ('${
-      userDocumentSchema.id
-    }', ${userDocumentSchema.owner_id}, '${userDocumentSchema.name}', '${userDocumentSchema.pdf_file_name}', '${
-      userDocumentSchema.md_file_name
-    }', '${userDocumentSchema.updated_at.toISOString()}', '${userDocumentSchema.created_at.toISOString()}') RETURNING id`;
+    const { id, owner_id, name, pdf_file_name, md_file_name, template_id, title_page_id, updated_at, created_at } =
+      userDocumentSchema;
+    return `INSERT INTO user_documents (id, owner_id, name, pdf_file_name, md_file_name, template_id, title_page_id, updated_at, created_at) VALUES ('${id}', ${owner_id}, '${name}', '${pdf_file_name}', '${md_file_name}', ${
+      template_id ? `'${template_id}'` : null
+    }, ${
+      title_page_id ? `'${title_page_id}'` : null
+    }, '${updated_at.toISOString()}', '${created_at.toISOString()}') RETURNING id`;
   }
 
-  update(userDocumentSchema: UserDocumentSchema) {
-    return `UPDATE user_documents SET owner_id=${userDocumentSchema.owner_id}, name='${
-      userDocumentSchema.name
-    }', pdf_file_name='${userDocumentSchema.pdf_file_name}', md_file_name='${
-      userDocumentSchema.md_file_name
-    }', updated_at='${userDocumentSchema.updated_at.toISOString()}', created_at='${userDocumentSchema.created_at.toISOString()}' WHERE id='${
-      userDocumentSchema.id
-    }'`;
+  update(s: UserDocumentSchema) {
+    return `UPDATE user_documents SET owner_id=${s.owner_id}, name='${s.name}', pdf_file_name='${
+      s.pdf_file_name
+    }', md_file_name='${s.md_file_name}', template_id=${s.template_id ? `'${s.template_id}'` : null}, title_page_id=${
+      s.title_page_id ? `'${s.title_page_id}'` : null
+    }, updated_at='${s.updated_at.toISOString()}', created_at='${s.created_at.toISOString()}' WHERE id='${s.id}'`;
   }
 
   deleteById(id: string) {
