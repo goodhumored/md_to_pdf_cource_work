@@ -1,0 +1,18 @@
+{
+  "name": "makaw-migrations",
+  "version": "1.0.0",
+  "description": "makaw migrations",
+  "type": "commonjs",
+  "main": "run-migrations.js",
+  "scripts": {
+    "migrate:up": "node-pg-migrate up",
+    "migrate:down": "node-pg-migrate down",
+    "migrate:create": "node-pg-migrate create"
+  },
+  "author": "goodhumored",
+  "license": "ISC",
+  "dependencies": {
+    "node-pg-migrate": "^7.9.1",
+    "pg": "^8.15.6"
+  }
+}
