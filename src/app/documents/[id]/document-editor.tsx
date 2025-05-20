@@ -1,5 +1,7 @@
 "use client";
 
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import MDEditor from "@uiw/react-md-editor";
 import { useEffect, useState } from "react";
@@ -11,6 +13,7 @@ import handleChangeTemplate from "./handle-change-template";
 import handleChangeTitle from "./handle-change-title";
 import handleUpdateMd from "./handle-update-md";
 import Picker from "./picker";
+import Link from "next/link";
 
 export default function DocumentEditor({
   className,
@@ -87,7 +90,14 @@ export default function DocumentEditor({
           />
         </div>
         <div className="p-5 basis-1/2">
-          <div className="text-2xl">PDF result</div>
+          <div className="flex justify-between text-2xl">
+            <div className="">PDF result</div>{" "}
+            <div className="">
+              <Link href={pdfSource} target="_blank">
+                <FontAwesomeIcon icon={faDownload} />
+              </Link>
+            </div>
+          </div>
           <div className="mt-4 h-full max-h-full overflow-y-scroll p-2 border-2 relative">
             {loading && <Loading />}
             <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">

@@ -9,8 +9,8 @@ import SessionRepository from "../../infrastructure/session/session.repository";
 export default class SessionManager {
   constructor(private readonly _sessionRepository: SessionRepository) {}
 
-  getSession(request?: NextRequest): Promise<Session | undefined> {
-    const cookieStorage = request?.cookies ?? cookies();
+  async getSession(request?: NextRequest): Promise<Session | undefined> {
+    const cookieStorage = request?.cookies ?? (await cookies());
     const sessionId = cookieStorage.get("session_id")?.value;
     if (!sessionId) return Promise.resolve(undefined);
     const sessionResponse = this._sessionRepository.getById(sessionId);

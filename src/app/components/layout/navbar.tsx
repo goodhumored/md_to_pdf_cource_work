@@ -32,7 +32,9 @@ export default function Navbar({ username }: { username?: string | undefined }) 
       <div className={`flex max-sm:${show ? "block" : "hidden"}`}>
         <div className="flex"></div>
         <nav className="grow flex list-none max-sm:flex-col items-center">
-          <div className="text-3xl font-bold text-white mr-10">MD2PDF</div>
+          <div className="text-3xl font-bold text-white mr-10">
+            <Link href="/">MD2PDF</Link>
+          </div>
           {pages.map((page, i) => (
             <NavItem className="flex-grow-0" key={i} selected={page.path === pathname} href={page.path}>
               {page.label}
