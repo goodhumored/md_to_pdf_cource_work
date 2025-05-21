@@ -53,6 +53,9 @@ importers:
       react-dom:
         specifier: ^19
         version: 19.1.0(react@19.1.0)
+      react-hooks:
+        specifier: ^1.0.1
+        version: 1.0.1
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -69,6 +72,9 @@ importers:
       '@eslint/js':
         specifier: ^9.27.0
         version: 9.27.0
+      '@next/eslint-plugin-next':
+        specifier: ^15.3.2
+        version: 15.3.2
       '@tailwindcss/postcss':
         specifier: ^4.1.7
         version: 4.1.7
@@ -120,6 +126,9 @@ importers:
       eslint-plugin-prettier:
         specifier: ^5.x.x
         version: 5.4.0(eslint-config-prettier@10.1.5(eslint@9.27.0(jiti@2.4.2)))(eslint@9.27.0(jiti@2.4.2))(prettier@3.5.3)
+      eslint-plugin-react-hooks:
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@9.27.0(jiti@2.4.2))
       globals:
         specifier: ^16.1.0
         version: 16.1.0
@@ -2496,6 +2505,9 @@ packages:
     resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
     peerDependencies:
       react: ^19.1.0
+
+  react-hooks@1.0.1:
+    resolution: {integrity: sha512-PXU08tw4SvKwkW99qgnyV98x939RCmBC6aXqALPQXPjKq6+6EoH79Rz4KdUozzlpSyWmn2IiEm0vh3p+79aP5w==}
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -5809,6 +5821,8 @@ snapshots:
     dependencies:
       react: 19.1.0
       scheduler: 0.26.0
+
+  react-hooks@1.0.1: {}
 
   react-is@16.13.1: {}
 

@@ -34,39 +34,39 @@ export default function AuthForm() {
     }
   }, [state]);
   return (
-    <div className="mt-12 pt-7 pb-4 px-8 rounded-3xl border border-brown-gray-semitransparent bg-soft-brown-semitransparent">
-      <div className="text-3xl">Авторизация</div>
-      <form className="p-4 flex flex-col space-y-4" action={formAction}>
+    <div className="">
+      <form className=" mt-11 w-full max-w-xl flex-col space-y-4" action={formAction}>
+        <label className="font-medium" htmlFor="username">Имя пользователя</label>
         <input
-          className="text-gray-600 text-base bg-white py-2.5 px-4 rounded-2xl w-full"
+          className="mt-4 text-gray-600 text-base bg-slate-50 rounded-md border-1 border-slate-400/20 py-2.5 px-4  w-full"
+          id="username"
           name="username"
           required
-          placeholder="Имя пользователя"
+          placeholder="some_username"
         />
+        <label className="font-medium mt-4.5" htmlFor="password">Пароль</label>
         <input
-          className="text-gray-600 text-base bg-white py-2.5 px-4 rounded-2xl w-full"
+          className="mt-4 text-gray-600 text-base bg-slate-50 rounded-md border-1 border-slate-400/20 py-2.5 px-4  w-full"
           name="password"
+          id="password"
           required
           type="password"
-          placeholder="Пароль"
+          placeholder="••••••••••"
         />
-        <button className="grow h-14 shadow-none bg-beige rounded-2xl text-light_black">Отправить</button>
-        <Link className={"text-xs"} href={"/signup"}>
-          Нет аккаунта? Зарегестрироваться
+        <div className=" mt-2">
+          <input
+            className=""
+            name="remember"
+            id="remember"
+            type="checkbox"
+          />
+          <label className="font-medium ml-2.5 text-black/80" htmlFor="remember">Запомнить меня</label>
+        </div>
+        <button className="w-full py-2.5 bg-slate-700 text-white rounded-md font-medium mt-2.5">Войти</button>
+        <Link className={"text-xs text-right w-full block"} href={"/signup"}>
+          Нет аккаунта? <span className="underline font-medium">Зарегестрироваться</span>
         </Link>
       </form>
-      {snackState.open ? (
-        <Snackbar
-          onClose={() => {
-            setSnackState({ open: false, severity: "info", text: "" });
-          }}
-          open={snackState.open}
-          severity={snackState.severity}
-          text={snackState.text}
-        />
-      ) : (
-        <span />
-      )}
     </div>
   );
 }

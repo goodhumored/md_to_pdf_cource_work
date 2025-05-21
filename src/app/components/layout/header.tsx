@@ -9,8 +9,8 @@ export default async function Header() {
   const session = await sessionManager.getSession();
 
   return (
-    <div className="bg-soft-brown">
+    <header className="bg-soft-brown w-full">
       <Navbar username={session?.getUser()?.getUsername()} />
-    </div>
+    </header>
   );
 }

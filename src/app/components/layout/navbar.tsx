@@ -20,23 +20,21 @@ export default function Navbar({ username }: { username?: string | undefined }) 
   const pathname = usePathname();
   const [show, setShow] = useState(false);
   return (
-    <div className="container mx-auto">
+    <div className="bg-gray-800 shadow-gray-800/20 w-full px-5 py-2 ">
       <div className="flex justify-between sm:hidden px-4 text-white">
         <div className="text-base uppercase font-trajan">
-          <Link href="/">MD2PDF</Link>
         </div>
         <div className="hover:cursor-pointer" onClick={() => setShow(!show)}>
           <FontAwesomeIcon width={19} height={15} icon={faBars} />
         </div>
       </div>
-      <div className={`flex max-sm:${show ? "block" : "hidden"}`}>
-        <div className="flex"></div>
-        <nav className="grow flex list-none max-sm:flex-col items-center">
+      <div className={`flex w-full max-sm:${show ? "block" : "hidden"}`}>
+        <nav className="grow flex list-none max-sm:flex-col items-center container">
           <div className="text-3xl font-bold text-white mr-10">
             <Link href="/">MD2PDF</Link>
           </div>
           {pages.map((page, i) => (
-            <NavItem className="flex-grow-0" key={i} selected={page.path === pathname} href={page.path}>
+            <NavItem className="grow-0" key={i} selected={page.path === pathname} href={page.path}>
               {page.label}
             </NavItem>
           ))}
