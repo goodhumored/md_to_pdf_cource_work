@@ -5,8 +5,13 @@ export default class User {
 
   private _passwordHash: string;
 
-  constructor(data: { id?: number | undefined; username: string; passwordHash: string }) {
+  constructor(data: {
+    id?: number | undefined;
+    username: string;
+    passwordHash: string;
+  }) {
     this.id = data.id;
+    this._username = data.username;
     this._username = data.username;
     this._passwordHash = data.passwordHash;
   }

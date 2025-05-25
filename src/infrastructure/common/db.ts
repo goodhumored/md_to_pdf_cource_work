@@ -9,13 +9,8 @@ export default class DB {
   private readonly _connected: Promise<boolean>;
 
   constructor() {
-    this._client = new Client({
-      host: config.db.host,
-      port: config.db.port,
-      database: config.db.name,
-      user: config.db.username,
-      password: config.db.password
-    });
+    this._client = new Client(config.db.connectionString);
+    console.log("CONNECTING DB");
     this._connected = this._client.connect().then(() => true);
   }
 

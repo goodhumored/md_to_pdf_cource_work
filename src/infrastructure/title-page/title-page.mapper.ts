@@ -8,7 +8,9 @@ export default class TitlePageMapper {
     return new TitlePage({
       id: titlePage.id,
       name: titlePage.name,
-      filename: titlePage.filename
+      filename: titlePage.filename,
+      thumbnail: titlePage.thumbnail,
+      url: titlePage.url,
     });
   }
 
@@ -16,7 +18,9 @@ export default class TitlePageMapper {
     return {
       id: titlePage.getId(),
       name: titlePage.getName(),
-      filename: titlePage.getFilename()
+      filename: titlePage.getFilename(),
+      thumbnail: titlePage.getThumbnail(),
+      url: titlePage.getUrl() ?? "",
     };
   }
 }

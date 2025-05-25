@@ -1,4 +1,6 @@
 import { singleton } from "tsyringe";
+import { dbInsertStringify } from "../../utils/db-insert-stringify";
+import { dbUpdateStringify } from "../../utils/db-update-stringify";
 import UserSchema from "./user.schema";
 
 @singleton()
@@ -16,10 +18,10 @@ export default class UserQueryBuilder {
   }
 
   insert(userSchema: UserSchema) {
-    return `INSERT INTO users (username, password_hash) VALUES ('${userSchema.username}', '${userSchema.password_hash}') RETURNING id`;
+    return `INSERT INTO users ${dbInsertStringify(userSchema)} RETURNING id`;
   }
 
   update(userSchema: UserSchema) {
-    return `UPDATE users SET username='${userSchema.username}' password_hash='${userSchema.password_hash}' WHERE id=${userSchema.id}`;
+    return `UPDATE users SET ${dbUpdateStringify(userSchema)} WHERE id=${userSchema.id}`;
   }
 }

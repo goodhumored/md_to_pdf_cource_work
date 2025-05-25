@@ -25,6 +25,8 @@ export default class UserDocument {
 
   private _isNew: boolean;
 
+  private _cover?: string | undefined;
+
   constructor(
     data: {
       id: string;
@@ -36,8 +38,9 @@ export default class UserDocument {
       updatedAt: Date;
       titlePage?: TitlePage | undefined;
       template?: LatexTemplate | undefined;
+      thumbnail?: string | undefined;
     },
-    isNew?: boolean
+    isNew?: boolean,
   ) {
     this._id = data.id;
     this._owner = data.owner;
@@ -49,6 +52,7 @@ export default class UserDocument {
     this._isNew = !!isNew;
     this._titlePage = data.titlePage;
     this._template = data.template;
+    if (data.thumbnail) this._cover = data.thumbnail;
   }
 
   static create(owner: User, name: string, mdPath?: string, pdfPath?: string) {
@@ -61,9 +65,9 @@ export default class UserDocument {
         mdPath: mdPath ?? `${name}-${id}.md`,
         pdfPath: pdfPath ?? `${name}-${id}.pdf`,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
-      true
+      true,
     );
   }
 
@@ -143,5 +147,13 @@ export default class UserDocument {
 
   isNew(): boolean {
     return this._isNew;
+  }
+
+  getCoverUrl(): string | undefined {
+    return this._cover;
+  }
+
+  setCoverUrl(coverUrl: string | undefined) {
+    this._cover = coverUrl;
   }
 }

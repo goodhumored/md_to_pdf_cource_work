@@ -173,4 +173,5 @@ next-env.d.ts
 public/*.md
 public/*.pdf
 public/*.latex
+public/*.webp
 

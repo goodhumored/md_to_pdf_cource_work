@@ -17,7 +17,8 @@ export default class UserDocumentMapper {
       pdf_file_name: userDocument.getPdfPath(),
       name: userDocument.getName(),
       template_id: userDocument.getLatexTemplate()?.getId() ?? null,
-      title_page_id: userDocument.getTitlePage()?.getId() ?? null
+      title_page_id: userDocument.getTitlePage()?.getId() ?? null,
+      thumbnail: userDocument.getCoverUrl(),
     };
   }
 
@@ -25,7 +26,7 @@ export default class UserDocumentMapper {
     userDocument: UserDocumentSchema,
     user: User,
     template?: LatexTemplate | undefined,
-    title?: TitlePage | undefined
+    title?: TitlePage | undefined,
   ) {
     return new UserDocument({
       id: userDocument.id,
@@ -36,7 +37,8 @@ export default class UserDocumentMapper {
       mdPath: userDocument.md_file_name,
       owner: user,
       template,
-      titlePage: title
+      titlePage: title,
+      thumbnail: userDocument.thumbnail,
     });
   }
 }

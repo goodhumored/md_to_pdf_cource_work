@@ -9,6 +9,7 @@ export type Config = {
     name: string;
     username: string;
     password: string;
+    connectionString: string;
   };
 };
 
@@ -18,7 +19,8 @@ const config: Config = {
     port: parseInt(process.env["DB_PORT"] || "3308", 10),
     name: process.env["DB_NAME"] ?? "md_to_pdf",
     username: process.env["DB_USERNAME"] ?? "user",
-    password: process.env["DB_PASSWORD"] ?? "password"
-  }
+    password: process.env["DB_PASSWORD"] ?? "password",
+    connectionString: process.env["DATABASE_URL"] ?? "",
+  },
 };
 export default config;

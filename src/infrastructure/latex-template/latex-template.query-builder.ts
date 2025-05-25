@@ -1,10 +1,12 @@
 import { singleton } from "tsyringe";
+import { dbInsertStringify } from "../../utils/db-insert-stringify";
+import { dbUpdateStringify } from "../../utils/db-update-stringify";
 import LatexTemplateSchema from "./latex-template.schema";
 
 @singleton()
 export default class LatexTemplateQueryBuilder {
-  insert(userSchema: LatexTemplateSchema) {
-    return `INSERT INTO templates (id, name, filename) VALUES ('${userSchema.id}', '${userSchema.name}', '${userSchema.filename}') RETURNING id`;
+  insert(templateSchema: LatexTemplateSchema) {
+    return `INSERT INTO templates ${dbInsertStringify(templateSchema)} RETURNING id`;
   }
 
   findById(id: string) {
@@ -15,7 +17,7 @@ export default class LatexTemplateQueryBuilder {
     return `SELECT * FROM templates`;
   }
 
-  update(userSchema: LatexTemplateSchema) {
-    return `UPDATE templates SET name='${userSchema.name}' filename='${userSchema.filename}' WHERE id='${userSchema.id}'`;
+  update(templateSchema: LatexTemplateSchema) {
+    return `UPDATE templates SET ${dbUpdateStringify(templateSchema)} WHERE id='${templateSchema.id}'`;
   }
 }

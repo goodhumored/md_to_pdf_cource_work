@@ -9,10 +9,21 @@ export default class LatexTemplate {
 
   private _isNew: boolean;
 
-  constructor(data: { id: string; name: string; filename: string }, isNew = false) {
+  private _thumbnail?: string;
+
+  constructor(
+    data: {
+      id: string;
+      name: string;
+      filename: string;
+      thumbnail?: string | undefined;
+    },
+    isNew = false,
+  ) {
     this._id = data.id;
     this._name = data.name;
     this._filename = data.filename;
+    if (data.thumbnail) this._thumbnail = data.thumbnail;
     this._isNew = isNew;
   }
 
@@ -37,5 +48,13 @@ export default class LatexTemplate {
 
   isNew(): boolean {
     return this._isNew;
+  }
+
+  getThumbnail(): string | undefined {
+    return this._thumbnail;
+  }
+
+  setThumbnail(thumbnail: string) {
+    this._thumbnail = thumbnail;
   }
 }

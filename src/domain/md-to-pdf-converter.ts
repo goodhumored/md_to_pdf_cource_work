@@ -1,5 +1,5 @@
 import { spawn } from "child_process";
-import { rename, unlink } from "fs/promises";
+import { rename } from "fs/promises";
 import { singleton } from "tsyringe";
 import UserDocument from "./user-document/user-document";
 
@@ -10,11 +10,16 @@ export default class MDToPDFConverter {
       userDocument.getLocalMdFilePath(),
       userDocument.getLocalPdfFilePath(),
       userDocument.getTitlePage()?.getFilename(),
-      userDocument.getLatexTemplate()?.getFilename()
+      userDocument.getLatexTemplate()?.getFilename(),
     );
   }
 
-  async convert(sourceFile: string, outPath: string, titlePath = "", templatePath = ""): Promise<void> {
+  async convert(
+    sourceFile: string,
+    outPath: string,
+    titlePath = "",
+    templatePath = "",
+  ): Promise<void> {
     await this.pandoc(sourceFile, templatePath);
     if (titlePath) await this.addTitle(`${outPath}`, `public/${titlePath}`);
   }
@@ -37,9 +42,12 @@ export default class MDToPDFConverter {
   private addTitle(pdfPath: string, titlePath: string) {
     const outPath = `${pdfPath}-1`;
     return new Promise<void>((resolve, reject) => {
+      console.log("pdfunite", [titlePath, pdfPath, outPath]);
       const proccess = spawn("pdfunite", [titlePath, pdfPath, outPath]);
       proccess.on("error", (err) => reject(err));
-      proccess.stdout.on("data", (data: Buffer) => console.log(data.toString()));
+      proccess.stdout.on("data", (data: Buffer) =>
+        console.log(data.toString()),
+      );
       proccess.on("close", (code) => {
         if (code === 0) resolve();
         reject(new Error(`proccess exited with code ${code}`));

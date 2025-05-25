@@ -8,7 +8,8 @@ export default class LatexTemplateMapper {
     return new LatexTemplate({
       id: latexTemplate.id,
       name: latexTemplate.name,
-      filename: latexTemplate.filename
+      filename: latexTemplate.filename,
+      thumbnail: latexTemplate.thumbnail,
     });
   }
 
@@ -16,7 +17,8 @@ export default class LatexTemplateMapper {
     return {
       id: latexTemplate.getId(),
       name: latexTemplate.getName(),
-      filename: latexTemplate.getFilename()
+      filename: latexTemplate.getFilename(),
+      thumbnail: latexTemplate.getThumbnail(),
     };
   }
 }

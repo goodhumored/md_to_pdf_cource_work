@@ -1,10 +1,12 @@
 import { singleton } from "tsyringe";
+import { dbInsertStringify } from "../../utils/db-insert-stringify";
+import { dbUpdateStringify } from "../../utils/db-update-stringify";
 import UserSchema from "./title-page.schema";
 
 @singleton()
 export default class TitlePageQueryBuilder {
   insert(userSchema: UserSchema) {
-    return `INSERT INTO title_pages (id, name, filename) VALUES ('${userSchema.id}', '${userSchema.name}', '${userSchema.filename}') RETURNING id`;
+    return `INSERT INTO title_pages ${dbInsertStringify(userSchema)} RETURNING id`;
   }
 
   findById(id: string) {
@@ -16,6 +18,6 @@ export default class TitlePageQueryBuilder {
   }
 
   update(userSchema: UserSchema) {
-    return `UPDATE title_pages SET name='${userSchema.name}' filename='${userSchema.filename}' WHERE id='${userSchema.id}'`;
+    return `UPDATE title_pages SET ${dbUpdateStringify(userSchema)} WHERE id='${userSchema.id}'`;
   }
 }
