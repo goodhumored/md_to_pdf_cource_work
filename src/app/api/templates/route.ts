@@ -9,6 +9,12 @@ import MinioService from "../../../infrastructure/minio.service";
 const templateService = container.resolve(TemplateService);
 const userService = container.resolve(UserService);
 
+export type TemplateDTO = {
+  name: string;
+  id: string;
+  thumbnail: string;
+};
+
 export async function GET() {
   const user = await userService.getCurrentUserOrRedirectToAuth();
   const templates = await templateService.getUserTemplates(user.getId()!);
