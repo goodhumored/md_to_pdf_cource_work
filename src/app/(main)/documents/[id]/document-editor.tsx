@@ -2,7 +2,7 @@
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MDEditor from "@uiw/react-md-editor";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "reflect-metadata";
 import handleChangeTemplate from "./handle-change-template";
 import handleChangeTitle from "./handle-change-title";
@@ -11,7 +11,6 @@ import Picker from "./picker";
 import Link from "next/link";
 import useDebounce from "../../../hooks/common/use-debounce";
 import randInt from "../../../../utils/randint";
-import Loading from "../../../components/common/loading";
 import PdfViewer from './pdf-viewer';
 
 type DocumentEditorProps = {
@@ -36,23 +35,26 @@ export default function DocumentEditor(props: DocumentEditorProps) {
     pickedTemplate,
     pickedTitle
   } = props;
+  console.log(pdfFilePath)
 
   const [md, setMd] = useState<string>(mdCode);
   const [pdfSource, setPdfSource] = useState(pdfFilePath);
   const [loading, setLoading] = useState(false);
   const debauncedMd = useDebounce(md, 1000);
+  const isInitialMount = useRef(true);
 
   function refreshPdf() {
     return setPdfSource(`${pdfFilePath}?random=${randInt(0, 1000000)}`);
   }
   function loadingWhile<TPromise extends Promise<unknown>>(promise: TPromise): TPromise {
     setLoading(true);
-    promise.finally(() => setLoading(false));
+    promise.finally(() => setLoading(false)).catch(console.error);
     return promise;
   }
 
   useEffect(() => {
-    if (debauncedMd) loadingWhile(handleUpdateMd(documentId, debauncedMd).then(refreshPdf));
+    if (isInitialMount.current === true) { isInitialMount.current = false; return }
+    if (debauncedMd) loadingWhile(handleUpdateMd(documentId, debauncedMd).then(refreshPdf)).catch(console.error);
   }, [debauncedMd]);
 
   return (
@@ -103,7 +105,7 @@ export default function DocumentEditor(props: DocumentEditorProps) {
               </Link>
             </div>
           </div>
-          <PdfViewer className="" link={pdfSource} />
+          <PdfViewer loading={loading} className="" link={pdfSource} />
         </div>
       </div>
     </div>

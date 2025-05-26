@@ -7,7 +7,7 @@ export default function DocumentItem({ className, document: doc, }: { className?
       className={`relative w-40 aspect-[1/1.414] justify-between flex flex-col group overflow-hidden ${className}`}
     >
       <div className=" px-4 w-full flex items-center justify-center bg-slate-200">
-        {doc && (<Image src={new URL(doc.thumbnail, document.location.origin).toString()} fill alt={doc.name} />)}
+        {doc && (<Image src={doc.thumbnail} fill alt={doc.name} />)}
       </div>
       {doc &&
         <div className="

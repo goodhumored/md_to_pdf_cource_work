@@ -1,10 +1,9 @@
-import { open } from "fs/promises";
 import { v4 } from "uuid";
 import LatexTemplate from "../latex-template/latex-template";
 import TitlePage from "../title-page/title-page";
 import User from "../user/user";
 
-export default class UserDocument {
+export default class UserDocument<T extends string | undefined = undefined> {
   private _id: string;
 
   private _owner: User;
@@ -25,7 +24,9 @@ export default class UserDocument {
 
   private _isNew: boolean;
 
-  private _cover?: string | undefined;
+  private _cover: string;
+
+  private _mdCode!: T;
 
   constructor(
     data: {
@@ -38,7 +39,7 @@ export default class UserDocument {
       updatedAt: Date;
       titlePage?: TitlePage | undefined;
       template?: LatexTemplate | undefined;
-      thumbnail?: string | undefined;
+      thumbnail: string;
     },
     isNew?: boolean,
   ) {
@@ -52,7 +53,7 @@ export default class UserDocument {
     this._isNew = !!isNew;
     this._titlePage = data.titlePage;
     this._template = data.template;
-    if (data.thumbnail) this._cover = data.thumbnail;
+    this._cover = data.thumbnail;
   }
 
   static create(owner: User, name: string, mdPath?: string, pdfPath?: string) {
@@ -62,8 +63,9 @@ export default class UserDocument {
         id,
         owner,
         name,
-        mdPath: mdPath ?? `${name}-${id}.md`,
-        pdfPath: pdfPath ?? `${name}-${id}.pdf`,
+        mdPath: mdPath ?? `${id}/source.md`,
+        pdfPath: pdfPath ?? `${id}/result.pdf`,
+        thumbnail: `${id}/cover.jpg`,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -81,44 +83,6 @@ export default class UserDocument {
 
   getName(): string {
     return this._name;
-  }
-
-  getMdCode(): Promise<string> {
-    return open(this.getLocalMdFilePath(), "r")
-      .then((f) => f.readFile().then((b) => f.close().then(() => b.toString())))
-      .catch(() => "");
-  }
-
-  writeMd(md: string): Promise<void> {
-    return open(this.getLocalMdFilePath(), "w+")
-      .then((f) => f.writeFile(md).then(() => f.close()))
-      .then(() => {
-        this._updatedAt = new Date();
-      });
-  }
-
-  getLocalPdfFilePath(): string {
-    return `public/${this._pdfPath}`;
-  }
-
-  getLocalMdFilePath(): string {
-    return `public/${this._mdPath}`;
-  }
-
-  getPublicMd(): string {
-    return `/${this._mdPath}`;
-  }
-
-  getMdPath(): string {
-    return `${this._mdPath}`;
-  }
-
-  getPdfPath(): string {
-    return `${this._pdfPath}`;
-  }
-
-  getPublicPdfPath(): string {
-    return `/${this._pdfPath}`;
   }
 
   getLatexTemplate(): LatexTemplate | undefined {
@@ -149,11 +113,25 @@ export default class UserDocument {
     return this._isNew;
   }
 
-  getCoverUrl(): string | undefined {
+  getThumbnailPath(): string {
     return this._cover;
   }
 
-  setCoverUrl(coverUrl: string | undefined) {
-    this._cover = coverUrl;
+  getMdPath(): string {
+    return this._mdPath;
+  }
+
+  getPdfPath(): string {
+    return this._pdfPath;
+  }
+
+  getMdCode(): T {
+    return this._mdCode;
+  }
+
+  setMdCode<NewT extends string | undefined>(newMd: NewT): UserDocument<NewT> {
+    const newThis = this as unknown as UserDocument<NewT>;
+    newThis._mdCode = newMd;
+    return newThis;
   }
 }

@@ -7,6 +7,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import Loading from '../../../components/common/loading';
 import LinkService from 'react-pdf/dist/esm/LinkService.js';
 import { ScrollPageIntoViewArgs } from 'react-pdf/dist/esm/shared/types.js';
+import { cn } from '../../../../utils/cn';
 
 type PdfViewDocumentElementRefObject = {
   linkService: React.RefObject<LinkService>;
@@ -16,7 +17,7 @@ type PdfViewDocumentElementRefObject = {
   }>
 }
 
-export default function PdfViewer({ className, link: _link }: { className?: string, link: string }) {
+export default function PdfViewer({ className, loading = false, link: _link }: { className?: string, link: string, loading?: boolean }) {
   const [width, setWidth] = useState(0);
   const docRef = useRef<PdfViewDocumentElementRefObject>(null);
   const [lastScrollTop, setLastScrollTop] = useState(0);
@@ -53,29 +54,30 @@ export default function PdfViewer({ className, link: _link }: { className?: stri
   }, [lastScrollTop, scrollRef])
 
   return (
-    <div ref={scrollRef} className="mt-4 overflow-y-scroll p-2 border-2 relative aspect-[1/1.414]">
-      <Document
-        ref={docRef as any}
-        loading={(<Loading />)}
-        className={className}
-        file={link}
-        onLoadSuccess={onDocumentLoadSuccess}
-      >
-        {Array.from(
-          new Array(numPages),
-          (_, index) => (
-            <Page
-              onLoadSuccess={() => {
-                updateWidth(); updateScrollPosition();
-              }}
-              width={width}
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-              loading={(<Loading />)}
-            />
-          ),
-        )}
-      </Document>
-    </div>
+    <div className={cn(className, "relative aspect-[1/1.414] mt-4 ")}>
+      {loading && <Loading />}
+      <div ref={scrollRef} className="absolute inset-0 overflow-y-scroll h-full p-2 border-2 ">
+        <Document
+          ref={docRef as any}
+          loading={(<Loading />)}
+          file={link}
+          onLoadSuccess={onDocumentLoadSuccess}
+        >
+          {Array.from(
+            new Array(numPages),
+            (_, index) => (
+              <Page
+                onLoadSuccess={() => {
+                  updateWidth(); updateScrollPosition();
+                }}
+                width={width}
+                key={`page_${index + 1}`}
+                pageNumber={index + 1}
+                loading={(<Loading />)}
+              />
+            ),
+          )}
+        </Document>
+      </div></div>
   );
 }

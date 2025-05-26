@@ -10,7 +10,7 @@ export default class TitlePageMapper {
       name: titlePage.name,
       filename: titlePage.filename,
       thumbnail: titlePage.thumbnail,
-      url: titlePage.url,
+      userId: titlePage.user_id,
     });
   }
 
@@ -20,7 +20,7 @@ export default class TitlePageMapper {
       name: titlePage.getName(),
       filename: titlePage.getFilename(),
       thumbnail: titlePage.getThumbnail(),
-      url: titlePage.getUrl() ?? "",
+      user_id: titlePage.getUserId(),
     };
   }
 }

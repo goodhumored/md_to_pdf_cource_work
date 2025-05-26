@@ -10,7 +10,7 @@ export default class TitlePageRepository {
   constructor(
     private readonly _db: DB,
     private readonly _titlePageMapper: TitlePageMapper,
-    private readonly _titlePageQueryBuilder: TitlePageQueryBuilder
+    private readonly _titlePageQueryBuilder: TitlePageQueryBuilder,
   ) {}
 
   async save(titlePage: TitlePage): Promise<TitlePage> {
@@ -22,7 +22,9 @@ export default class TitlePageRepository {
   }
 
   async getById(id: string): Promise<TitlePage | undefined> {
-    const result = await this._db.query<TitlePageSchema>(this._titlePageQueryBuilder.findById(id));
+    const result = await this._db.query<TitlePageSchema>(
+      this._titlePageQueryBuilder.findById(id),
+    );
     if (result.rows[0]) {
       return this._titlePageMapper.schemaToEntity(result.rows[0]);
     }
@@ -32,6 +34,22 @@ export default class TitlePageRepository {
   findAll(): Promise<TitlePage[]> {
     return this._db
       .query<TitlePageSchema>(this._titlePageQueryBuilder.findAll())
-      .then((result) => Promise.all(result.rows.map((row) => this._titlePageMapper.schemaToEntity(row))));
+      .then((result) =>
+        Promise.all(
+          result.rows.map((row) => this._titlePageMapper.schemaToEntity(row)),
+        ),
+      );
+  }
+
+  async getByOwnerId(ownerId: number): Promise<TitlePage[]> {
+    return this._db
+      .query<TitlePageSchema>(
+        this._titlePageQueryBuilder.findByOwnerId(ownerId),
+      )
+      .then((result) =>
+        Promise.all(
+          result.rows.map((row) => this._titlePageMapper.schemaToEntity(row)),
+        ),
+      );
   }
 }

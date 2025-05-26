@@ -1,8 +1,8 @@
-type UserSchema = {
+type TitlePageSchema = {
   id: string;
   name: string;
   filename: string;
-  thumbnail: string | null;
-  url: string;
+  thumbnail: string;
+  user_id: string;
 };
-export default UserSchema;
+export default TitlePageSchema;

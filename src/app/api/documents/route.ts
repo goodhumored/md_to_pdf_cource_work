@@ -2,6 +2,8 @@ import "reflect-metadata";
 
 import container from "@/container";
 import { NextResponse } from "next/server";
+import { join } from "path/posix";
+import config from "../../../config/config";
 import UserDocumentService from "../../../domain/user-document/user-document.service";
 
 const userDocumentService = container.resolve(UserDocumentService);
@@ -14,7 +16,11 @@ export async function GET() {
       id: doc.getId(),
       updatedAt: doc.getUpdatedAt(),
       createdAt: doc.getCreatedAt(),
-      thumbnail: doc.getCoverUrl(),
+      thumbnail: join(
+        config.fileStorage.public_url,
+        config.fileStorage.bucket_name,
+        doc.getThumbnailPath() ?? "",
+      ),
     })),
   );
 }

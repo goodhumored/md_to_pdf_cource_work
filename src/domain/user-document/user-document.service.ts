@@ -1,7 +1,10 @@
+import { join } from "path";
 import { singleton } from "tsyringe";
 import LatexTemplateRepository from "../../infrastructure/latex-template/latex-template.repository";
+import MinioService from "../../infrastructure/minio.service";
 import TitlePageRepository from "../../infrastructure/title-page/title-page.repository";
 import UserDocumentRepository from "../../infrastructure/user-document/user-document.repository";
+import writeFileWithDir from "../../utils/write-file-with-dir";
 import MDToPDFConverter from "../md-to-pdf-converter";
 import PdfCoverExtractor from "../pdf-cover-extractor";
 import UserService from "../user/user.service";
@@ -14,6 +17,7 @@ export default class UserDocumentService {
     private readonly _userService: UserService,
     private readonly _titleService: TitlePageRepository,
     private readonly _converter: MDToPDFConverter,
+    private readonly _minio: MinioService,
     private readonly _coverExtractor: PdfCoverExtractor,
     private readonly _templateRepo: LatexTemplateRepository,
     private readonly _titleRepo: TitlePageRepository,
@@ -27,7 +31,7 @@ export default class UserDocumentService {
       const titlePage = await this._titleService.getById(title);
       newDocument.setTitlePage(titlePage);
     }
-    newDocument.writeMd("# Пример");
+    await this.convertUserDoc(newDocument, true, "# Пример");
     return this._repo.save(newDocument);
   }
 
@@ -36,17 +40,17 @@ export default class UserDocumentService {
     return this._repo.getByOwnerId(user.getId()!);
   }
 
+  async getUserDocument(id: string): Promise<UserDocument<string>> {
+    return this._repo.getById(id).then(async (d) => {
+      if (!d) throw new Error("Not Found");
+      return d.setMdCode(await this._minio.readFile(d.getMdPath()));
+    });
+  }
+
   async updateUserDocMarkdown(documentId: string, newMarkdown: string) {
     const doc = await this._repo.getById(documentId);
     if (!doc) throw new Error("Document not found");
-    await doc.writeMd(newMarkdown);
-    await this._converter.convertUserDoc(doc);
-    if (!doc.getTitlePage()) {
-      const newCover = await this._coverExtractor.getPDFCover(
-        doc.getLocalPdfFilePath(),
-      );
-      doc.setCoverUrl(newCover);
-    }
+    await this.convertUserDoc(doc, !doc.getTitlePage(), newMarkdown);
     return await this._repo.save(doc);
   }
 
@@ -61,13 +65,7 @@ export default class UserDocumentService {
       if (!template) throw new Error("Template not found");
       doc.setLatexTemplate(template);
     } else doc.setLatexTemplate(undefined);
-    await this._converter.convertUserDoc(doc);
-    if (!doc.getTitlePage()) {
-      const newCover = await this._coverExtractor.getPDFCover(
-        doc.getLocalPdfFilePath(),
-      );
-      doc.setCoverUrl(newCover);
-    }
+    await this.convertUserDoc(doc, !doc.getTitlePage());
     return await this._repo.save(doc);
   }
 
@@ -79,11 +77,35 @@ export default class UserDocumentService {
       if (!title) throw new Error("Title not found");
       doc.setTitlePage(title);
     } else doc.setTitlePage(undefined);
-    await this._converter.convertUserDoc(doc);
-    const newCover = await this._coverExtractor.getPDFCover(
-      doc.getLocalPdfFilePath(),
-    );
-    doc.setCoverUrl(newCover);
+    await this.convertUserDoc(doc, true);
     return this._repo.save(doc);
+  }
+
+  public convertUserDoc(
+    doc: UserDocument,
+    updateCover = false,
+    newMd?: string,
+  ) {
+    return this._minio.withFiles(
+      [
+        doc.getMdPath(),
+        doc.getThumbnailPath(),
+        doc.getTitlePage()?.getFilename(),
+        doc.getLatexTemplate()?.getFilename(),
+      ],
+      async (cwd, [_md, _tn, _title, _template]) => {
+        const md = (await _md) ?? join(cwd, doc.getMdPath());
+        if (newMd) {
+          await writeFileWithDir(md, Buffer.from(newMd));
+        }
+        const pdf = join(cwd, doc.getPdfPath());
+        const thumbnail = join(cwd, doc.getThumbnailPath());
+        await this._converter.convert(md, pdf, await _title, await _template);
+        if (updateCover) await this._coverExtractor.getPDFCover(pdf, thumbnail);
+        return [(await _tn)!, pdf]
+          .concat(updateCover ? [thumbnail] : [])
+          .concat(newMd ? [md] : []);
+      },
+    );
   }
 }

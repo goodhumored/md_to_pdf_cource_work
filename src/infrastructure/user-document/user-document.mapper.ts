@@ -18,7 +18,7 @@ export default class UserDocumentMapper {
       name: userDocument.getName(),
       template_id: userDocument.getLatexTemplate()?.getId() ?? null,
       title_page_id: userDocument.getTitlePage()?.getId() ?? null,
-      thumbnail: userDocument.getCoverUrl(),
+      thumbnail: userDocument.getThumbnailPath(),
     };
   }
 
