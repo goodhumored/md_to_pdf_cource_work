@@ -17,11 +17,11 @@ export default function DocumentsList({ className, }: { className?: string; }) {
   const { Modal, openModal, isOpen } = useDocumentCreationModal();
   const [documents, setDocuments] = useState<Doc[]>([]);
   useEffect(() => {
-    fetch("/api/documents").then((r) => r.json()).then(r => { console.log(r); setDocuments(r) })
+    fetch("/api/documents").then((r) => r.json()).then(r => { console.log(r); setDocuments(r as Doc[]) }).catch(console.error)
   }, [isOpen])
 
   return (
-    <div className={`grid grid-cols-[repeat(auto-fit,9.75rem)] gap-x-4 pt-5 ${className}`}>
+    <div className={`grid grid-cols-[repeat(auto-fit,9.75rem)] gap-x-4 gap-y-2 pt-5 ${className}`}>
       {documents.map((doc, i) => (
         <Link className="w-fit" key={i} href={`/documents/${doc.id}`}><DocumentItem document={doc} /></Link>
       ))}

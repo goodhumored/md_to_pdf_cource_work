@@ -9,29 +9,40 @@ export default class LatexTemplate {
 
   private _isNew: boolean;
 
-  private _thumbnail?: string;
+  private _thumbnail: string;
+
+  private _isPublic: boolean;
+
+  private _owner: number;
 
   constructor(
     data: {
       id: string;
       name: string;
       filename: string;
-      thumbnail?: string | undefined;
+      owner: number;
+      thumbnail?: string;
+      isPublic: boolean;
     },
     isNew = false,
   ) {
     this._id = data.id;
     this._name = data.name;
-    this._filename = data.filename;
-    if (data.thumbnail) this._thumbnail = data.thumbnail;
+    this._filename = data.filename ?? `${data.owner}/${data.id}.latex`;
+    this._thumbnail = data.thumbnail ?? `${data.owner}/${data.id}.webp`;
     this._isNew = isNew;
+    this._isPublic = data.isPublic;
+    this._owner = data.owner;
   }
 
-  static create(name?: string) {
+  static create(owner: number, name?: string) {
     const id = v4();
     const titlePageName = name ?? id;
     const filename = `template-${name?.replace(".latex", "") ?? ""}-${id}.latex`;
-    return new LatexTemplate({ id, name: titlePageName, filename }, true);
+    return new LatexTemplate(
+      { id, name: titlePageName, filename, owner, isPublic: false },
+      true,
+    );
   }
 
   getId(): string {
@@ -50,11 +61,23 @@ export default class LatexTemplate {
     return this._isNew;
   }
 
-  getThumbnail(): string | undefined {
+  getThumbnail(): string {
     return this._thumbnail;
   }
 
   setThumbnail(thumbnail: string) {
     this._thumbnail = thumbnail;
+  }
+
+  getOwner() {
+    return this._owner;
+  }
+
+  getPublic() {
+    return this._isPublic;
+  }
+
+  setPublic(isPublic: boolean) {
+    this._isPublic = isPublic;
   }
 }

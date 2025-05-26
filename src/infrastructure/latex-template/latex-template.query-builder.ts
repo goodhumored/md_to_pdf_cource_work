@@ -13,6 +13,10 @@ export default class LatexTemplateQueryBuilder {
     return `SELECT * FROM templates WHERE id = '${id}'`;
   }
 
+  byOwnerId(ownerId: number) {
+    return `SELECT * FROM templates WHERE user_id=${ownerId}`;
+  }
+
   findAll() {
     return `SELECT * FROM templates`;
   }

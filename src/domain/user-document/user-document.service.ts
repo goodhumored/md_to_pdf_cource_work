@@ -26,8 +26,7 @@ export default class UserDocumentService {
   async createDocument(name: string, title?: string): Promise<UserDocument> {
     const user = await this._userService.getCurrentUserOrRedirectToAuth();
     const newDocument = UserDocument.create(user, name);
-    if (!!title) {
-      console.log(title, !!title, typeof title);
+    if (title) {
       const titlePage = await this._titleService.getById(title);
       newDocument.setTitlePage(titlePage);
     }

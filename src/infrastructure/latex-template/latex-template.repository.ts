@@ -10,7 +10,7 @@ export default class LatexTemplateRepository {
   constructor(
     private readonly _db: DB,
     private readonly _latexTemplateMapper: LatexTemplateMapper,
-    private readonly _latexTemplateQueryBuilder: LatexTemplateQueryBuilder
+    private readonly _latexTemplateQueryBuilder: LatexTemplateQueryBuilder,
   ) {}
 
   async save(latexTemplate: LatexTemplate): Promise<LatexTemplate> {
@@ -22,16 +22,38 @@ export default class LatexTemplateRepository {
   }
 
   async getById(id: string): Promise<LatexTemplate | undefined> {
-    const result = await this._db.query<LatexTemplateSchema>(this._latexTemplateQueryBuilder.findById(id));
+    const result = await this._db.query<LatexTemplateSchema>(
+      this._latexTemplateQueryBuilder.findById(id),
+    );
     if (result.rows[0]) {
       return this._latexTemplateMapper.schemaToEntity(result.rows[0]);
     }
     return undefined;
   }
 
+  getByOwnerId(ownerId: number): Promise<LatexTemplate[]> {
+    return this._db
+      .query<LatexTemplateSchema>(
+        this._latexTemplateQueryBuilder.byOwnerId(ownerId),
+      )
+      .then((result) =>
+        Promise.all(
+          result.rows.map((row) =>
+            this._latexTemplateMapper.schemaToEntity(row),
+          ),
+        ),
+      );
+  }
+
   findAll(): Promise<LatexTemplate[]> {
     return this._db
       .query<LatexTemplateSchema>(this._latexTemplateQueryBuilder.findAll())
-      .then((result) => Promise.all(result.rows.map((row) => this._latexTemplateMapper.schemaToEntity(row))));
+      .then((result) =>
+        Promise.all(
+          result.rows.map((row) =>
+            this._latexTemplateMapper.schemaToEntity(row),
+          ),
+        ),
+      );
   }
 }

@@ -10,6 +10,8 @@ export default class LatexTemplateMapper {
       name: latexTemplate.name,
       filename: latexTemplate.filename,
       thumbnail: latexTemplate.thumbnail,
+      isPublic: latexTemplate.public,
+      owner: latexTemplate.user_id,
     });
   }
 
@@ -19,6 +21,8 @@ export default class LatexTemplateMapper {
       name: latexTemplate.getName(),
       filename: latexTemplate.getFilename(),
       thumbnail: latexTemplate.getThumbnail(),
+      public: latexTemplate.getPublic(),
+      user_id: latexTemplate.getOwner(),
     };
   }
 }

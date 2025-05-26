@@ -1,7 +1,9 @@
 type LatexTemplateSchema = {
   id: string;
   name: string;
-  thumbnail?: string | undefined;
+  thumbnail: string;
   filename: string;
+  public: boolean;
+  user_id: number;
 };
 export default LatexTemplateSchema;
