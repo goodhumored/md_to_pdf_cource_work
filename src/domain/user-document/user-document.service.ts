@@ -107,4 +107,11 @@ export default class UserDocumentService {
       },
     );
   }
+
+  public async deleteDocument(userId: number, documentId: string) {
+    const doc = await this._repo.getById(documentId);
+    if (doc?.getOwner().getId() != userId)
+      throw new Error("Пользователь не является владельцем документа");
+    await this._repo.deleteById(documentId);
+  }
 }

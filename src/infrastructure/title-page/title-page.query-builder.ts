@@ -25,4 +25,8 @@ export default class TitlePageQueryBuilder {
   update(s: TitlePageSchema) {
     return `UPDATE title_pages SET ${dbUpdateStringify(s)} WHERE id='${s.id}'`;
   }
+
+  deleteById(id: string) {
+    return `DELETE FROM title_pages WHERE id = '${id}'`;
+  }
 }

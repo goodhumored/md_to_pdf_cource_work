@@ -24,4 +24,8 @@ export default class LatexTemplateQueryBuilder {
   update(templateSchema: LatexTemplateSchema) {
     return `UPDATE templates SET ${dbUpdateStringify(templateSchema)} WHERE id='${templateSchema.id}'`;
   }
+
+  deleteById(id: string) {
+    return `DELETE FROM title_pages WHERE id = '${id}'`;
+  }
 }

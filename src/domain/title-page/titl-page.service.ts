@@ -34,4 +34,11 @@ export default class TitlePageService {
   async getUserTitlePages(userId: number) {
     return this._repo.getByOwnerId(userId);
   }
+
+  public async delete(userId: number, id: string) {
+    const doc = await this._repo.getById(id);
+    if (doc?.getUserId() != userId)
+      throw new Error("Пользователь не является владельцем титульного листа");
+    await this._repo.deleteById(id);
+  }
 }

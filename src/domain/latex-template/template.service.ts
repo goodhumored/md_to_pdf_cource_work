@@ -52,51 +52,49 @@ export default class TemplateService {
   getUserTemplates(userId: number) {
     return this._repo.getByOwnerId(userId);
   }
+
+  public async delete(userId: number, id: string) {
+    const templ = await this._repo.getById(id);
+    if (templ?.getOwner() != userId)
+      throw new Error("Пользователь не является владельцем титульного листа");
+    await this._repo.deleteById(id);
+  }
 }
 
 const TEMPLATE_EXAMPLE_TEXT = `
 # Пример оформления
 
-## Заголовок 2
-
-### Заголовок 3
-
-#### Заголовок 4
-
-##### Заголовок 5
-
 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vitae, tempora ut! Beatae doloribus soluta incidunt, dolore temporibus rerum accusantium assumenda eveniet voluptatibus sequi? Mollitia neque, nostrum eius dignissimos delectus aperiam.
 
-***
 
-### Список:
+## Заголовок 2:
 
 - Элемент 1
-- Элемент 2
-- Элемент 3
+  - Элемент 3
 
-### Нумерованный список:
+### Нумерованный список (Заголовок 3):
 
 1. Элемент 1
 2. Элемент 2
-3. Элемент 3
+  a. Элемент 3
 
-### Математические выражения
+#### Математика (Заголовок 4):
 
 $$
 S \\rightarrow \\mathbf{a :=} F \\mathbf{;} \\
 $$
 
-### Изображение:
+##### Изображение (Заголовок 5):
 
 ![Тестовое изображение](https://images.unsplash.com/photo-1506744038136-46273834b3fb?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFuZHNjYXBlfGVufDB8fDB8fHww)
 
-### Таблица:
+###### Таблица (Заголовок 6):
 
 |    | a | := | ( | ) | not | or | xor | and | ; |
 |----|---|----|---|---|-----|----|-----|-----|---|
 | a  |   | =  |   | > |     | >  |  >  |  >  | > |
 | := | < |    | < | < |  <  | <  |  <  |  <  | = |
-| (  | < |    | < | = |  <  | <  |  <  |  <  |   |
+
+***
 
 `;

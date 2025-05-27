@@ -1,10 +1,11 @@
 import "reflect-metadata";
 import DocumentsList from "./documents-list";
 
-export default async function Documents() {
+export default function Documents() {
   return (
-    <div className="container py-8">
-      <DocumentsList />
+    <div className="container pt-20">
+      <h1 className="container font-medium text-4xl">Ваши документы:</h1>
+      <DocumentsList className="mt-12" />
     </div>
   );
 }

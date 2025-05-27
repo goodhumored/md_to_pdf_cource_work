@@ -10,20 +10,20 @@ export default class LatexTemplateRepository {
   constructor(
     private readonly _db: DB,
     private readonly _latexTemplateMapper: LatexTemplateMapper,
-    private readonly _latexTemplateQueryBuilder: LatexTemplateQueryBuilder,
+    private readonly _queryBuilder: LatexTemplateQueryBuilder,
   ) {}
 
   async save(latexTemplate: LatexTemplate): Promise<LatexTemplate> {
     const schema = this._latexTemplateMapper.entityToSchema(latexTemplate);
     if (latexTemplate.isNew()) {
-      await this._db.query(this._latexTemplateQueryBuilder.insert(schema));
-    } else await this._db.query(this._latexTemplateQueryBuilder.update(schema));
+      await this._db.query(this._queryBuilder.insert(schema));
+    } else await this._db.query(this._queryBuilder.update(schema));
     return latexTemplate;
   }
 
   async getById(id: string): Promise<LatexTemplate | undefined> {
     const result = await this._db.query<LatexTemplateSchema>(
-      this._latexTemplateQueryBuilder.findById(id),
+      this._queryBuilder.findById(id),
     );
     if (result.rows[0]) {
       return this._latexTemplateMapper.schemaToEntity(result.rows[0]);
@@ -33,9 +33,7 @@ export default class LatexTemplateRepository {
 
   getByOwnerId(ownerId: number): Promise<LatexTemplate[]> {
     return this._db
-      .query<LatexTemplateSchema>(
-        this._latexTemplateQueryBuilder.byOwnerId(ownerId),
-      )
+      .query<LatexTemplateSchema>(this._queryBuilder.byOwnerId(ownerId))
       .then((result) =>
         Promise.all(
           result.rows.map((row) =>
@@ -47,7 +45,7 @@ export default class LatexTemplateRepository {
 
   findAll(): Promise<LatexTemplate[]> {
     return this._db
-      .query<LatexTemplateSchema>(this._latexTemplateQueryBuilder.findAll())
+      .query<LatexTemplateSchema>(this._queryBuilder.findAll())
       .then((result) =>
         Promise.all(
           result.rows.map((row) =>
@@ -55,5 +53,9 @@ export default class LatexTemplateRepository {
           ),
         ),
       );
+  }
+
+  deleteById(id: string): Promise<void> {
+    return this._db.query(this._queryBuilder.deleteById(id)).then();
   }
 }
