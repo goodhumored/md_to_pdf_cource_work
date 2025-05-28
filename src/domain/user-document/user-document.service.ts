@@ -1,3 +1,4 @@
+import { rm } from "fs/promises";
 import { join } from "path";
 import { singleton } from "tsyringe";
 import LatexTemplateRepository from "../../infrastructure/latex-template/latex-template.repository";
@@ -7,6 +8,7 @@ import UserDocumentRepository from "../../infrastructure/user-document/user-docu
 import writeFileWithDir from "../../utils/write-file-with-dir";
 import MDToPDFConverter from "../md-to-pdf-converter";
 import PdfCoverExtractor from "../pdf-cover-extractor";
+import PdfToMdConverter from "../pdf-to-md-converter";
 import UserService from "../user/user.service";
 import UserDocument from "./user-document";
 
@@ -16,21 +18,39 @@ export default class UserDocumentService {
     private readonly _repo: UserDocumentRepository,
     private readonly _userService: UserService,
     private readonly _titleService: TitlePageRepository,
-    private readonly _converter: MDToPDFConverter,
+    private readonly _md2pdfConverter: MDToPDFConverter,
+    private readonly _pdf2mdConverter: PdfToMdConverter,
     private readonly _minio: MinioService,
     private readonly _coverExtractor: PdfCoverExtractor,
     private readonly _templateRepo: LatexTemplateRepository,
     private readonly _titleRepo: TitlePageRepository,
   ) {}
 
-  async createDocument(name: string, title?: string): Promise<UserDocument> {
+  async createDocument(
+    name: string,
+    title?: string,
+    existingDocument?: File,
+  ): Promise<UserDocument> {
     const user = await this._userService.getCurrentUserOrRedirectToAuth();
     const newDocument = UserDocument.create(user, name);
     if (title) {
       const titlePage = await this._titleService.getById(title);
       newDocument.setTitlePage(titlePage);
     }
-    await this.convertUserDoc(newDocument, true, "# Пример");
+    let initialMd = "# Пример";
+    if (existingDocument) {
+      const pdfPath = this._minio.getTempPath(
+        join(newDocument.getId(), "prototype.pdf"),
+      );
+      const buffer = Buffer.from(await existingDocument.arrayBuffer());
+      await writeFileWithDir(pdfPath, buffer);
+      initialMd = await this._pdf2mdConverter.convert(
+        pdfPath,
+        this._minio.getTempPath(newDocument.getMdPath()),
+      );
+      await rm(pdfPath);
+    }
+    await this.convertUserDoc(newDocument, true, initialMd);
     return this._repo.save(newDocument);
   }
 
@@ -99,7 +119,12 @@ export default class UserDocumentService {
         }
         const pdf = join(cwd, doc.getPdfPath());
         const thumbnail = join(cwd, doc.getThumbnailPath());
-        await this._converter.convert(md, pdf, await _title, await _template);
+        await this._md2pdfConverter.convert(
+          md,
+          pdf,
+          await _title,
+          await _template,
+        );
         if (updateCover) await this._coverExtractor.getPDFCover(pdf, thumbnail);
         return [(await _tn)!, pdf]
           .concat(updateCover ? [thumbnail] : [])

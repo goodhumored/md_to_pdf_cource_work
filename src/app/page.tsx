@@ -1,9 +1,10 @@
-"use client";
+import { container } from "tsyringe";
+import UserService from "../domain/user/user.service";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <div className="container flex h-[700px] mb-10">
-      <h1>Главная</h1>
-    </div>
-  );
+const userService = container.resolve(UserService)
+
+export default async function Home() {
+  await userService.getCurrentUserOrRedirectToAuth();
+  redirect("/dashboard");
 }

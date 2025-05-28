@@ -2,8 +2,9 @@
 import { Doc } from "./documents-list";
 import Image from "next/image"
 import trash from "@/../public/icons/trash.svg";
+import eye from "@/../public/icons/eye.svg";
 
-export default function DocumentItem({ className, document: doc, onDelete = () => { } }: { className?: string; document: Doc, onDelete: () => void }) {
+export default function DocumentItem({ className, document: doc, onDelete = () => { }, handlePreview = () => { } }: { className?: string; document: Doc, onDelete: () => void, handlePreview: () => void }) {
   return (
     <div
       className={`relative aspect-[1/1.414] justify-between flex flex-col group overflow-hidden ${className}`}
@@ -34,7 +35,12 @@ export default function DocumentItem({ className, document: doc, onDelete = () =
           hour12: false
         })}</div>
       </div>
-      <div className="absolute z-100 top-2 right-2 group-hover:block hidden">
+      <div className="absolute z-100 top-2 right-2 group-hover:flex hidden space-x-2">
+        <button type="button" onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          handlePreview();
+        }} className="p-1 hover:brightness-120 rounded-sm bg-black/30"><Image className="w-4" src={eye} alt="preview" /></button>
         <button type="button" onClick={(e) => {
           e.preventDefault()
           e.stopPropagation()

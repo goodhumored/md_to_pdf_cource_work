@@ -6,12 +6,14 @@ import TitlePageItem from "./title-page-item";
 import useTitlePageModal from "./title-page-modal";
 import useConfirmModal from "../../common/modal/confirm-modal";
 import DeleteTitlePage from "../../api/title-pages/delete";
+import usePreviewModal from "../../common/modal/preview-modal";
 
 export default function TitlePageList({ className }: { className?: string; }) {
   const { Modal, openModal, isOpen } = useTitlePageModal()
   const [titles, setTitles] = useState<TitlePageDTO[]>([]);
   const [trigger, setTrigger] = useState(false);
   const { openModal: openConfirmModal, Modal: ConfirmModal } = useConfirmModal()
+  const { openModal: openPreviewModal, Modal: PreviewModal } = usePreviewModal()
 
   useEffect(() => {
     fetch("/api/title-pages").then((r) => r.json()).then(r => { console.log(r); setTitles(r as TitlePageDTO[]) }).catch(console.error)
@@ -25,13 +27,15 @@ export default function TitlePageList({ className }: { className?: string; }) {
   }, [])
 
   return (
-    <div className={`grid grid-cols-[repeat(auto-fit,20rem)] gap-x-12 gap-y-8 pt-5 ${className}`}>
+    <div className={`grid grid-cols-[repeat(auto-fit,20rem)] gap-x-12 gap-y-8 justify-evenly pt-5 ${className}`}>
       {titles.map((doc, i) => (
-        <TitlePageItem key={i} onDelete={() => { handleDelete(doc.id, doc.name).catch(console.error) }} titlePage={doc} />
+        <TitlePageItem key={i} handlePreview={() => openPreviewModal(`Предпросмотр "${doc.name}"`, doc.thumbnail)}
+          onDelete={() => { handleDelete(doc.id, doc.name).catch(console.error) }} titlePage={doc} />
       ))}
-      <button className="flex-col aspect-[1/1.414] px-4 flex items-center justify-center hover:bg-slate-300 bg-slate-200" onClick={openModal}>Загрузить титульник</button>
+      <button className="flex-col aspect-[1/1.414] px-4 flex items-center justify-center hover:bg-slate-300 bg-slate-200" onClick={openModal}><span className="text-6xl mb-2">+</span><br />Загрузить титульник</button>
       {Modal}
       {ConfirmModal}
+      {PreviewModal}
     </div>
   );
 }

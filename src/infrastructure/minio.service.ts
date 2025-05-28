@@ -69,13 +69,15 @@ export default class MinioService {
             rs.pipe(ws);
             ws.on("finish", () => resolve(targetPath));
             ws.on("error", (err) =>
-              reject(`Error writing file: ${err.message}`),
+              reject(new Error(`Error writing file: ${err.message}`)),
             );
-            rs.on("error", (err) => reject(`Stream error: ${err.message}`));
+            rs.on("error", (err) =>
+              reject(new Error(`Stream error: ${err.message}`)),
+            );
           })
-          .catch((err) => reject(err));
+          .catch((err: Error) => reject(err));
       } catch (err: unknown) {
-        reject(err);
+        reject(err as Error);
       }
     });
   }

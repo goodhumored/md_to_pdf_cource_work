@@ -8,10 +8,12 @@ interface FileInputProps {
   accept?: string; // Типы файлов, например, "image/*"
   className?: string; // Дополнительные классы для контейнера
   multiple?: boolean; // Поддержка множественного выбора файлов
+  label?: string;
 }
 
 export default function FileInput({
   name,
+  label,
   accept = "image/*",
   className = "",
   multiple = false,
@@ -97,8 +99,8 @@ export default function FileInput({
           onChange={handleFileChange}
           className="hidden"
         />
-        <p className="text-gray-600">
-          Перетащите файлы сюда или кликните для выбора
+        <p className="text-gray-600 whitespace-pre-line">
+          {label ?? "Перетащите файлы сюда или кликните для выбора"}
         </p>
         <button
           type="button"
