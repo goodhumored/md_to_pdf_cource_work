@@ -29,6 +29,7 @@ export default class UserDocumentService {
   async createDocument(
     name: string,
     title?: string,
+    templateId?: string,
     existingDocument?: File,
   ): Promise<UserDocument> {
     const user = await this._userService.getCurrentUserOrRedirectToAuth();
@@ -36,6 +37,10 @@ export default class UserDocumentService {
     if (title) {
       const titlePage = await this._titleService.getById(title);
       newDocument.setTitlePage(titlePage);
+    }
+    if (templateId) {
+      const template = await this._titleService.getById(templateId);
+      newDocument.setTitlePage(template);
     }
     let initialMd = "# Пример";
     if (existingDocument) {
@@ -77,27 +82,35 @@ export default class UserDocumentService {
     documentId: string,
     newTemplateId: string | undefined,
   ) {
+    return this.updateUserDoc(documentId, undefined, newTemplateId);
+  }
+
+  async updateDocTitle(documentId: string, newTitleId: string | undefined) {
+    return this.updateUserDoc(documentId, undefined, undefined, newTitleId);
+  }
+
+  async updateUserDoc(
+    documentId: string,
+    newName?: string,
+    newTemplateId?: string,
+    newTitleId?: string,
+  ) {
     const doc = await this._repo.getById(documentId);
     if (!doc) throw new Error("Document not found");
+    if (newName) doc.setName(newName);
     if (newTemplateId) {
       const template = await this._templateRepo.getById(newTemplateId);
       if (!template) throw new Error("Template not found");
       doc.setLatexTemplate(template);
-    } else doc.setLatexTemplate(undefined);
-    await this.convertUserDoc(doc, !doc.getTitlePage());
-    return await this._repo.save(doc);
-  }
-
-  async updateDocTitle(documentId: string, newTitleId: string | undefined) {
-    const doc = await this._repo.getById(documentId);
-    if (!doc) throw new Error("Document not found");
+    } else if (newTemplateId === null) doc.setLatexTemplate(undefined);
     if (newTitleId) {
       const title = await this._titleRepo.getById(newTitleId);
       if (!title) throw new Error("Title not found");
       doc.setTitlePage(title);
-    } else doc.setTitlePage(undefined);
-    await this.convertUserDoc(doc, true);
-    return this._repo.save(doc);
+    } else if (newTitleId === null) doc.setTitlePage(undefined);
+    if (newTitleId !== undefined || newTemplateId !== undefined)
+      await this.convertUserDoc(doc, !doc.getTitlePage());
+    return await this._repo.save(doc);
   }
 
   public convertUserDoc(

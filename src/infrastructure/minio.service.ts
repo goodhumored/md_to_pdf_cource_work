@@ -1,7 +1,7 @@
 import { createWriteStream } from "fs";
-import { readFile } from "fs/promises";
+import { mkdir, readFile } from "fs/promises";
 import { Client } from "minio";
-import { join, relative } from "path";
+import { dirname, join, relative } from "path";
 import { Readable } from "stream";
 import { singleton } from "tsyringe";
 import config from "../config/config";
@@ -59,8 +59,14 @@ export default class MinioService {
     );
   }
 
-  downloadFileToTemp(filename: string, bucketName?: string): Promise<string> {
+  async downloadFileToTemp(
+    filename: string,
+    bucketName?: string,
+  ): Promise<string> {
     const targetPath = this.getTempPath(filename);
+    await mkdir(dirname(targetPath), {
+      recursive: true,
+    }).catch(() => {});
     return new Promise((resolve, reject) => {
       try {
         const ws = createWriteStream(targetPath);

@@ -35,15 +35,20 @@ export default class MDToPDFConverter {
     const outPath = `${pdfPath}-1`;
     return new Promise<void>((resolve, reject) => {
       console.log("pdfunite", [titlePath, pdfPath, outPath]);
-      const proccess = spawn("pdfunite", [titlePath, pdfPath, outPath]);
-      proccess.on("error", (err) => reject(err));
-      proccess.stdout.on("data", (data: Buffer) =>
+      const pdfunite = spawn("pdfunite", [titlePath, pdfPath, outPath]);
+      pdfunite.on("error", (err) => reject(err));
+      pdfunite.stdout.on("data", (data: Buffer) =>
         console.log(data.toString()),
       );
-      proccess.on("close", (code) => {
+      pdfunite.stderr.on("data", (data: Buffer) =>
+        console.log(data.toString()),
+      );
+      pdfunite.on("close", (code) => {
         if (code === 0) resolve();
         reject(new Error(`proccess exited with code ${code}`));
       });
-    }).then(() => rename(outPath, pdfPath));
+    })
+      .then(() => rename(outPath, pdfPath))
+      .then(() => console.log("title added"));
   }
 }

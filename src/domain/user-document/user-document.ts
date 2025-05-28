@@ -3,7 +3,9 @@ import LatexTemplate from "../latex-template/latex-template";
 import TitlePage from "../title-page/title-page";
 import User from "../user/user";
 
-export default class UserDocument<T extends string | undefined = undefined> {
+export default class UserDocument<
+  T extends string | undefined = string | undefined,
+> {
   private _id: string;
 
   private _owner: User;
@@ -56,7 +58,12 @@ export default class UserDocument<T extends string | undefined = undefined> {
     this._cover = data.thumbnail;
   }
 
-  static create(owner: User, name: string, mdPath?: string, pdfPath?: string) {
+  static create(
+    owner: User,
+    name: string,
+    mdPath?: string,
+    pdfPath?: string,
+  ): UserDocument<undefined> {
     const id = v4();
     return new UserDocument(
       {
@@ -83,6 +90,10 @@ export default class UserDocument<T extends string | undefined = undefined> {
 
   getName(): string {
     return this._name;
+  }
+
+  setName(value: string) {
+    this._name = value;
   }
 
   getLatexTemplate(): LatexTemplate | undefined {

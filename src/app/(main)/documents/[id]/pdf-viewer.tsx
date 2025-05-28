@@ -27,9 +27,10 @@ export default function PdfViewer({ className, loading = false, link: _link }: {
   const [numPages, setNumPages] = useState<number | null>(null);
 
   const updateWidth = useCallback(() => {
-    console.log(docRef.current?.pages.current[0]?.clientWidth)
-    if (docRef.current?.pages?.current[0]?.clientWidth)
-      setWidth(docRef.current.pages.current[0].clientWidth);
+    const parentWidth = docRef.current?.pages.current[0]?.parentElement?.clientWidth;
+    console.log(parentWidth)
+    if (parentWidth)
+      setWidth(parentWidth);
   }, [docRef])
 
   useEffect(() => {

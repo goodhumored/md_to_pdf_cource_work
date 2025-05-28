@@ -1,50 +1,40 @@
 "use client";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import cog from "@/../public/icons/cog.svg";
 import MDEditor from "@uiw/react-md-editor";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image"
 import "reflect-metadata";
-import handleChangeTemplate from "./handle-change-template";
-import handleChangeTitle from "./handle-change-title";
 import handleUpdateMd from "./handle-update-md";
-import Picker from "./picker";
 import Link from "next/link";
 import useDebounce from "../../../hooks/common/use-debounce";
 import randInt from "../../../../utils/randint";
 import PdfViewer from './pdf-viewer';
+import { UserDocumentDTO } from "../../../api/documents/user-document.dto";
+import useUpdateDocumentModal from "../update-document-modal";
+import { cn } from "../../../../utils/cn";
 
 type DocumentEditorProps = {
   className?: string;
-  mdCode: string;
-  pdfFilePath: string;
-  documentId: string;
-  templates: { name: string; id: string }[];
-  pickedTemplate: string | undefined;
-  pickedTitle: string | undefined;
-  titles: { name: string; id: string }[];
+  doc: UserDocumentDTO
 }
 
 export default function DocumentEditor(props: DocumentEditorProps) {
   const {
     className,
-    mdCode,
-    pdfFilePath,
-    documentId,
-    templates,
-    titles,
-    pickedTemplate,
-    pickedTitle
+    doc
   } = props;
-  console.log(pdfFilePath)
 
-  const [md, setMd] = useState<string>(mdCode);
-  const [pdfSource, setPdfSource] = useState(pdfFilePath);
+  const [md, setMd] = useState<string>(doc.md_code ?? "");
+  const [pdfSource, setPdfSource] = useState(doc.pdf_url);
   const [loading, setLoading] = useState(false);
   const debauncedMd = useDebounce(md, 1000);
   const isInitialMount = useRef(true);
+  const { Modal, openModal } = useUpdateDocumentModal(doc);
 
   function refreshPdf() {
-    return setPdfSource(`${pdfFilePath}?random=${randInt(0, 1000000)}`);
+    return setPdfSource(`${doc.md_code}?random=${randInt(0, 1000000)}`);
   }
   function loadingWhile<TPromise extends Promise<unknown>>(promise: TPromise): TPromise {
     setLoading(true);
@@ -52,39 +42,27 @@ export default function DocumentEditor(props: DocumentEditorProps) {
     return promise;
   }
 
+  const handleUpdate = useCallback(async () => {
+    const result = await openModal();
+    if (result)
+      document.location.reload();
+  }, [openModal])
+
   useEffect(() => {
     if (isInitialMount.current === true) { isInitialMount.current = false; return }
-    if (debauncedMd) loadingWhile(handleUpdateMd(documentId, debauncedMd).then(refreshPdf)).catch(console.error);
+    if (debauncedMd) loadingWhile(handleUpdateMd(doc.id, debauncedMd).then(refreshPdf)).catch(console.error);
   }, [debauncedMd]);
 
   return (
-    <div className="container">
-      <div className="">
-        <div className="font-bold">Титульный лист</div>
-        <Picker
-          onChange={(newTitle) =>
-            loadingWhile(
-              handleChangeTitle(documentId, newTitle === "undefined" ? undefined : newTitle).then(refreshPdf)
-            )
-          }
-          pickedId={pickedTitle}
-          items={[{ id: "undefined", name: "По умолчанию" }, ...titles]}
-        />
+    <div className={cn(className, "container relative pt-12 pb-20")}>
+      <div className="flex items-end text-4xl">
+        <h1 className="font-medium">&laquo;{doc.name}&raquo;</h1>
+        <div className="ml-4">
+          <button type="button" onClick={() => { handleUpdate().catch(console.error) }} className="p-1 w-[.8em] hover:brightness-120 rounded-sm bg-black/30"><Image className="w-full" src={cog} alt="settings" /></button>
+        </div>
       </div>
-      <div className="">
-        <div className="font-bold">LaTex шаблон</div>
-        <Picker
-          onChange={(newTemplate) =>
-            loadingWhile(
-              handleChangeTemplate(documentId, newTemplate === "undefined" ? undefined : newTemplate).then(refreshPdf)
-            )
-          }
-          pickedId={pickedTemplate}
-          items={[{ id: "undefined", name: "По умолчанию" }, ...templates]}
-        />
-      </div>
-      <div className={`flex mb-10 ${className}`}>
-        <div className="p-5 flex-1">
+      <div className={`flex mt-4 gap-x-1`}>
+        <div className="flex-1">
           <div className="text-2xl">Markdown</div>
           <div className="mt-4 aspect-[1/1.414] relative">
             <MDEditor
@@ -96,7 +74,7 @@ export default function DocumentEditor(props: DocumentEditorProps) {
             />
           </div>
         </div>
-        <div className="p-5 flex-1">
+        <div className="flex-1">
           <div className="flex justify-between text-2xl">
             <div className="">PDF result</div>{" "}
             <div className="">
@@ -108,6 +86,7 @@ export default function DocumentEditor(props: DocumentEditorProps) {
           <PdfViewer loading={loading} className="" link={pdfSource} />
         </div>
       </div>
+      {Modal}
     </div>
   );
 }

@@ -8,22 +8,24 @@ import DeleteDocument from "../../api/documents/delete";
 import useConfirmModal from "../../common/modal/confirm-modal";
 import usePreviewModal from "../../common/modal/preview-modal";
 
-export type Doc = {
+export type UserDocumentDTO = {
   id: string;
   name: string;
   createdAt: Date;
   updatedAt: Date;
   thumbnail: string;
+  title_id: string | undefined;
+  template_id: string | undefined;
 }
 
 export default function DocumentsList({ className, }: { className?: string; }) {
   const { Modal, openModal, isOpen } = useDocumentCreationModal();
-  const [documents, setDocuments] = useState<Doc[]>([]);
+  const [documents, setDocuments] = useState<UserDocumentDTO[]>([]);
   const [trigger, setTrigger] = useState(false);
   const { openModal: openPreviewModal, Modal: PreviewModal } = usePreviewModal()
   const { openModal: openConfirmModal, Modal: ConfirmModal } = useConfirmModal()
   useEffect(() => {
-    fetch("/api/documents").then((r) => r.json()).then(r => { console.log(r); setDocuments(r as Doc[]) }).catch(console.error)
+    fetch("/api/documents").then((r) => r.json()).then(r => { console.log(r); setDocuments(r as UserDocumentDTO[]) }).catch(console.error)
   }, [isOpen, trigger])
 
   const handleDelete = useCallback(async (docId: string, docName: string) => {
@@ -40,7 +42,9 @@ export default function DocumentsList({ className, }: { className?: string; }) {
           handlePreview={() => openPreviewModal(`Предпросмотр "${doc.name}"`, doc.thumbnail)}
           onDelete={() => { handleDelete(doc.id, doc.name).catch(console.error) }} document={doc} /></Link>
       ))}
-      <button className="flex-col aspect-[1/1.414] px-4 flex items-center justify-center hover:bg-slate-300 bg-slate-200" onClick={openModal}><span className="text-6xl mb-2">+</span><br />Новый документ</button>
+      <button className="flex-col aspect-[1/1.414] px-4 flex items-center justify-center hover:bg-slate-300 bg-slate-200" onClick={openModal}>
+        <span className="text-6xl mb-2">+</span><br />Новый документ
+      </button>
       {Modal}
       {ConfirmModal}
       {PreviewModal}
