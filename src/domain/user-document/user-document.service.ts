@@ -43,7 +43,7 @@ export default class UserDocumentService {
       newDocument.setTitlePage(template);
     }
     let initialMd = "# Пример";
-    if (existingDocument) {
+    if (existingDocument && existingDocument.size > 0) {
       const pdfPath = this._minio.getTempPath(
         join(newDocument.getId(), "prototype.pdf"),
       );

@@ -17,7 +17,9 @@ export default class UserQueryBuilder {
     return `SELECT * FROM users WHERE username = '${username}'`;
   }
 
-  insert(userSchema: UserSchema) {
+  insert(_userSchema: UserSchema) {
+    const userSchema = _userSchema;
+    delete userSchema.id;
     return `INSERT INTO users ${dbInsertStringify(userSchema)} RETURNING id`;
   }
 

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Doc } from "./documents-list";
+import { UserDocumentDTO } from "./documents-list";
 import Image from "next/image"
 import trash from "@/../public/icons/trash.svg";
 import eye from "@/../public/icons/eye.svg";
 
-export default function DocumentItem({ className, document: doc, onDelete = () => { }, handlePreview = () => { } }: { className?: string; document: Doc, onDelete: () => void, handlePreview: () => void }) {
+export default function DocumentItem({ className, document: doc, onDelete = () => { }, handlePreview = () => { } }: { className?: string; document: UserDocumentDTO, onDelete: () => void, handlePreview: () => void }) {
   return (
     <div
       className={`relative aspect-[1/1.414] justify-between flex flex-col group overflow-hidden ${className}`}

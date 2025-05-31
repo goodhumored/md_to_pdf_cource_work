@@ -8,15 +8,6 @@ import DeleteDocument from "../../api/documents/delete";
 import useConfirmModal from "../../common/modal/confirm-modal";
 import usePreviewModal from "../../common/modal/preview-modal";
 
-export type UserDocumentDTO = {
-  id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  thumbnail: string;
-  title_id: string | undefined;
-  template_id: string | undefined;
-}
 
 export default function DocumentsList({ className, }: { className?: string; }) {
   const { Modal, openModal, isOpen } = useDocumentCreationModal();
